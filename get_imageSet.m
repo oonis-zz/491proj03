@@ -1,11 +1,17 @@
-function [ image_set ] = get_imageSet( images_per_subject, number_of_subjects )
+function [ image_set,some_array ] = get_imageSet( images_per_subject, number_of_subjects )
 % images_per_subject = 3;
 % number_of_subjects = 10;
 image_set = {};
+some_array = [];
+count=1;
 listings = dir( fullfile('./','images') );
 
 for i = 1 : images_per_subject
     for j = 1 : number_of_subjects
+        
+        some_array(count) = j;
+        count = count + 1;
+        
         if(j<10)
             img_pt1 = horzcat( 'user0',num2str(j),'_' );
         else

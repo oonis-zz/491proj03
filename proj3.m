@@ -1,5 +1,8 @@
+function similarity_score = proj3( compare_image,numVec )
+if(nargin<2)
+    isThree = 3;
+end
 %% Loading the Images
-clear all
 % input_dir = ‘D:\MATLAB R2012a\work’;
 % image_dims = [300, 238];
 % 
@@ -49,7 +52,7 @@ shifted_images = images - repmat(mean_face, 1, num_images);
 [evectors, score, evalues] = princomp(images', 'econ');
 
 % step 5: only retain the top ‘num_eigenfaces’ eigenvectors (i.e. the principal components)
-num_eigenfaces = 25;
+num_eigenfaces = numVec;
 evectors = evectors(:, 1:num_eigenfaces);
 % evalues = evalues(1:num_eigenfaces); % Get the evalues for the top 25
 
@@ -72,32 +75,36 @@ for x = 1 : numel( evectors(2,:) )
     end
 end
 
-
-return;
+% if( isThree == 3 )
+    similarity_score = [];
+    return;
+% end
 
 %% Question Three: Compute the euclidean distance between everything
 % calculate the similarity of the input to each training image
-input_image = imread('PC044879_cr.jpg');
-% input_image = rgb2gray(input_image);
-input_image = imresize(input_image,image_dims);
-input_image = im2double(input_image);
-feature_vec = evectors' * (input_image(:) - mean_face);
 
-similarity_score = arrayfun(@(n) 1 / (1 + norm(features(:,n) - feature_vec)), 1:num_images);
+    input_image = imread(compare_image);
+    % input_image = rgb2gray(input_image);
+    input_image = imresize(input_image,[30,30]);
+    input_image = im2double(input_image);
+    feature_vec = evectors' * (input_image(:) - mean_face);
 
-% find the image with the highest similarity
-[match_score, match_ix] = min(similarity_score);
+    similarity_score = arrayfun(@(n) 1 / (1 + norm(features(:,n) - feature_vec)), 1:num_images);
 
-% % display the result
-% figure, imshow([input_image reshape(images(:,match_ix), image_dims)]);
-% colormap(gray);
-% title(sprintf(‘matches %s, score %f’, filenames(match_ix).name, match_score));
+    % find the image with the highest similarity
+%     [match_score, match_ix] = min(similarity_score);
 
-% display the result
-figure, imshow([input_image reshape(images(:,match_ix), image_dims)]);
-% colormap(gray);
-title(sprintf('matches %s, score %f', filenames(match_ix).name, match_score));
+    % % display the result
+    % figure, imshow([input_image reshape(images(:,match_ix), image_dims)]);
+    % colormap(gray);
+    % title(sprintf(‘matches %s, score %f’, filenames(match_ix).name, match_score));
 
+    % display the result
+%     figure, imshow([input_image reshape(images(:,match_ix), [30,30])]);
+    % colormap(gray);
+%     title(sprintf('matches %s, score %f', 'This', match_score));
+% end
+return;
 % display the eigenvectors
 figure;
 % for n = 1:num_eigenfaces
